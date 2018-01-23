@@ -1,5 +1,9 @@
 using AtlasRobot
+using RigidBodyTreeInspector
 using Base.Test
 
-# write your own tests here
-@test 1 == 2
+@testset "load geometries" begin
+    mechanism = AtlasRobot.mechanism()
+    geometries = RigidBodyTreeInspector.parse_urdf(AtlasRobot.urdfpath(), mechanism; package_path = [AtlasRobot.packagepath()]);
+    @test length(geometries) == 48
+end
