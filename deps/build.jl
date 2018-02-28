@@ -1,4 +1,4 @@
-datadir = "atlas"
+datadir = "Atlas"
 atlas_examples_url = "https://raw.githubusercontent.com/RobotLocomotion/drake/73a8da32cd41ff7fd023c3680f8250860cbd0e6b/examples/atlas/"
 urdfpath = "urdf/atlas_convex_hull.urdf"
 

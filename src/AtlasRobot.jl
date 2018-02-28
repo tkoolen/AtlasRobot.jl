@@ -7,7 +7,7 @@ using RigidBodyDynamics.Contact
 using StaticArrays
 
 packagepath() = Pkg.dir("AtlasRobot", "deps")
-urdfpath() = joinpath(packagepath(), "atlas", "atlas.urdf")
+urdfpath() = joinpath(packagepath(), "Atlas", "atlas.urdf")
 
 function default_contact_model()
     SoftContactModel(hunt_crossley_hertz(k = 500e3), ViscoelasticCoulombModel(0.8, 20e3, 100.))
