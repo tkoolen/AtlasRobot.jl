@@ -58,4 +58,10 @@ function mechanism(::Type{T} = Float64;
     return mechanism
 end
 
+function __init__()
+    if !isfile(urdfpath())
+        error("Could not find $(urdfpath()). Please run `Pkg.build(\"AtlasRobot\")`.")
+    end
+end
+
 end # module
