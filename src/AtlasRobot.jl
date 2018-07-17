@@ -6,7 +6,7 @@ using RigidBodyDynamics
 using RigidBodyDynamics.Contact
 using StaticArrays
 
-packagepath() = joinpath(dirname(@__DIR__), "deps")
+packagepath() = joinpath(@__DIR__, "..", "deps")
 urdfpath() = joinpath(packagepath(), "Atlas", "atlas.urdf")
 
 function default_contact_model()
