@@ -1,9 +1,10 @@
 using AtlasRobot
-using RigidBodyTreeInspector
-using Base.Test
+using MechanismGeometries
+using Compat.Test
 
 @testset "load geometries" begin
     mechanism = AtlasRobot.mechanism()
-    geometries = RigidBodyTreeInspector.parse_urdf(AtlasRobot.urdfpath(), mechanism; package_path = [AtlasRobot.packagepath()]);
-    @test length(geometries) == 48
+    visuals = URDFVisuals(AtlasRobot.urdfpath(); package_path = [AtlasRobot.packagepath()])
+    meshgeometry = visual_elements(mechanism, visuals)
+    @test length(meshgeometry) == 48
 end
