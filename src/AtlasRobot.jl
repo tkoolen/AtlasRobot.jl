@@ -22,7 +22,7 @@ end
 function mechanism(::Type{T} = Float64;
         floating = true,
         contactmodel = default_contact_model(),
-        remove_fixed_tree_joints = true) where {T}
+        remove_fixed_tree_joints = true, add_flat_ground=false) where {T}
     mechanism = RigidBodyDynamics.parse_urdf(T, urdfpath())
 
     if floating
@@ -53,9 +53,33 @@ function mechanism(::Type{T} = Float64;
         end
     end
 
+    if add_flat_ground
+        frame = root_frame(mechanism)
+        ground = HalfSpace3D(Point3D(frame, 0., 0., 0.), FreeVector3D(frame, 0., 0., 1.))
+        add_environment_primitive!(mechanism, ground)
+    end
+
     remove_fixed_tree_joints && remove_fixed_tree_joints!(mechanism)
 
     return mechanism
+end
+
+function setnominal!(atlasstate::MechanismState)
+    mechanism = atlasstate.mechanism
+    zero!(atlasstate)
+    kneebend = 1.1
+    hipbendextra = 0.1
+    for sideprefix in ('l', 'r')
+        knee = findjoint(mechanism, "$(sideprefix)_leg_kny")
+        hippitch = findjoint(mechanism, "$(sideprefix)_leg_hpy")
+        anklepitch = findjoint(mechanism, "$(sideprefix)_leg_aky")
+        set_configuration!(atlasstate, knee, [kneebend])
+        set_configuration!(atlasstate, hippitch, [-kneebend / 2 + hipbendextra])
+        set_configuration!(atlasstate, anklepitch, [-kneebend / 2 - hipbendextra])
+    end
+    floatingjoint = first(out_joints(root_body(mechanism), mechanism))
+    set_configuration!(atlasstate, floatingjoint, [1; 0; 0; 0; 0; 0; 0.85])
+    atlasstate
 end
 
 function __init__()
