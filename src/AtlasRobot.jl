@@ -60,7 +60,7 @@ end
 
 function __init__()
     if !isfile(urdfpath())
-        error("Could not find $(urdfpath()). Please run `Pkg.build(\"AtlasRobot\")`.")
+        error("Could not find $(urdfpath()). Please run `import Pkg; Pkg.build(\"AtlasRobot\")`.")
     end
 end
 
