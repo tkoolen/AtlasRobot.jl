@@ -1,10 +1,12 @@
 using AtlasRobot
-using MechanismGeometries
 using Compat.Test
 
-@testset "load geometries" begin
+import RigidBodyDynamics: num_velocities
+
+@testset "atlas" begin
     mechanism = AtlasRobot.mechanism()
-    visuals = URDFVisuals(AtlasRobot.urdfpath(); package_path = [AtlasRobot.packagepath()])
-    meshgeometry = visual_elements(mechanism, visuals)
-    @test length(meshgeometry) == 48
+    @test num_velocities(mechanism) == 36
+    meshdir = joinpath(AtlasRobot.packagepath(), "Atlas", "urdf", "meshes")
+    @test isdir(meshdir)
+    @test count(x -> endswith(x, ".obj"), readdir(meshdir)) ==45
 end
