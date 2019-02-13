@@ -68,14 +68,23 @@ function setnominal!(atlasstate::MechanismState)
     mechanism = atlasstate.mechanism
     zero!(atlasstate)
     kneebend = 1.1
-    hipbendextra = 0.1
+    hipbendextra = 0.0
+    left_shoulder_x_angle = -1.2
+    elbow_y_angle = pi / 2
+    left_elbow_x_angle = 0.2
     for sideprefix in ('l', 'r')
         knee = findjoint(mechanism, "$(sideprefix)_leg_kny")
         hippitch = findjoint(mechanism, "$(sideprefix)_leg_hpy")
         anklepitch = findjoint(mechanism, "$(sideprefix)_leg_aky")
-        set_configuration!(atlasstate, knee, [kneebend])
-        set_configuration!(atlasstate, hippitch, [-kneebend / 2 + hipbendextra])
-        set_configuration!(atlasstate, anklepitch, [-kneebend / 2 - hipbendextra])
+        shoulder_x = findjoint(mechanism, "$(sideprefix)_arm_shx")
+        elbow_y = findjoint(mechanism, "$(sideprefix)_arm_ely")
+        elbow_x = findjoint(mechanism, "$(sideprefix)_arm_elx")
+        set_configuration!(atlasstate, knee, kneebend)
+        set_configuration!(atlasstate, hippitch, -kneebend / 2 + hipbendextra)
+        set_configuration!(atlasstate, anklepitch, -kneebend / 2 - hipbendextra)
+        set_configuration!(atlasstate, shoulder_x, sideprefix == 'l' ? left_shoulder_x_angle : -left_shoulder_x_angle)
+        set_configuration!(atlasstate, elbow_y, elbow_y_angle)
+        set_configuration!(atlasstate, elbow_x, sideprefix == 'l' ? left_elbow_x_angle : -left_elbow_x_angle)
     end
     floatingjoint = first(out_joints(root_body(mechanism), mechanism))
     set_configuration!(atlasstate, floatingjoint, [1; 0; 0; 0; 0; 0; 0.85])
