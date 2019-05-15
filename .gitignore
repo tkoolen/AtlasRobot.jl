@@ -3,4 +3,5 @@
 *.jl.mem
 deps/Atlas
 deps/build.log
+/Manifest.toml
 
