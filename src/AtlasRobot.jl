@@ -23,15 +23,7 @@ function mechanism(::Type{T} = Float64;
         floating = true,
         contactmodel = default_contact_model(),
         remove_fixed_tree_joints = true, add_flat_ground=false) where {T}
-    mechanism = RigidBodyDynamics.parse_urdf(T, urdfpath())
-
-    if floating
-        pelvis = findbody(mechanism, "pelvis")
-        basejoint = joint_to_parent(pelvis, mechanism)
-        floatingjoint = Joint(basejoint.name, frame_before(basejoint), frame_after(basejoint), QuaternionFloating{T}())
-        replace_joint!(mechanism, basejoint, floatingjoint)
-        basejoint = floatingjoint
-    end
+    mechanism = RigidBodyDynamics.parse_urdf(urdfpath(); scalar_type=T, floating=floating, remove_fixed_tree_joints=remove_fixed_tree_joints)
 
     if contactmodel != nothing
         for side in (:left, :right)
