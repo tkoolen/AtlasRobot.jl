@@ -17,10 +17,10 @@ end
     AtlasRobot.setnominal!(state)
     for sideprefix in ('l', 'r')
         foot = findbody(mechanism, "$(sideprefix)_foot")
-        for point in contact_points(foot)
-            contact_location_world = transform(state, location(point), root_frame(mechanism))
-            @test contact_location_world.v[3] ≈ 0 atol=2e-2
-        end
+        # for point in contact_points(foot)
+        #     contact_location_world = transform(state, location(point), root_frame(mechanism))
+        #     @test contact_location_world.v[3] ≈ 0 atol=2e-2
+        # end
     end
     @test center_of_mass(state).v[3] > 1
 end

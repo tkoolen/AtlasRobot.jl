@@ -9,9 +9,7 @@ using StaticArrays
 packagepath() = joinpath(@__DIR__, "..", "deps")
 urdfpath() = joinpath(packagepath(), "Atlas", "atlas.urdf")
 
-function default_contact_model()
-    SoftContactModel(hunt_crossley_hertz(k = 500e3), ViscoelasticCoulombModel(0.8, 20e3, 100.))
-end
+const SOLE_TO_ANKLE_OFFSET = 0.07645
 
 function flipsign_if_right(x::Number, side::Symbol)
     side == :left && return x
@@ -21,39 +19,49 @@ end
 
 function mechanism(::Type{T} = Float64;
         floating = true,
-        contactmodel = default_contact_model(),
-        remove_fixed_tree_joints = true, add_flat_ground=false) where {T}
-    mechanism = RigidBodyDynamics.parse_urdf(urdfpath(); scalar_type=T, floating=floating, remove_fixed_tree_joints=remove_fixed_tree_joints)
+        remove_fixed_tree_joints = true) where {T}
+    RigidBodyDynamics.parse_urdf(urdfpath(); scalar_type=T, floating=floating, remove_fixed_tree_joints=remove_fixed_tree_joints)
+end
 
-    if contactmodel != nothing
-        for side in (:left, :right)
-            foot = findbody(mechanism, "$(first(string(side)))_foot")
-            frame = default_frame(foot)
-            z = -0.07645
+function default_contact_force_model()
+    normal_model = hunt_crossley_hertz(; k=500e3)
+    tangential_model = ViscoelasticCoulombModel(0.8, 20e3, 100.)
+    SplitContactForceModel(normal_model, tangential_model)
+end
 
-            # heel
-            add_contact_point!(foot, ContactPoint(Point3D(frame, -0.0876, flipsign_if_right(0.066, side), z), contactmodel))
-            add_contact_point!(foot, ContactPoint(Point3D(frame, -0.0876, flipsign_if_right(-0.0626, side), z), contactmodel))
-
-            # toe:
-            add_contact_point!(foot, ContactPoint(Point3D(frame, 0.1728, flipsign_if_right(0.066, side), z), contactmodel))
-            add_contact_point!(foot, ContactPoint(Point3D(frame, 0.1728, flipsign_if_right(-0.0626, side), z), contactmodel))
-
-            # midfoot:
-            add_contact_point!(foot, ContactPoint(Point3D(frame, -0.0426, flipsign_if_right(0.066, side), z), contactmodel))
-            add_contact_point!(foot, ContactPoint(Point3D(frame, -0.0426, flipsign_if_right(-0.0626, side), z), contactmodel))
-        end
+function add_sole_frames!(mechanism::Mechanism)
+    soleframes = Dict{BodyID, CartesianFrame3D}()
+    for side in (:left, :right)
+        body = findbody(mechanism, "$(first(string(side)))_foot")
+        bodyframe = default_frame(body)
+        soleframe = soleframes[BodyID(body)] = CartesianFrame3D("$(body)_sole")
+        sole_to_body = Transform3D(soleframe, bodyframe, SVector(0, 0, -SOLE_TO_ANKLE_OFFSET))
+        add_frame!(body, sole_to_body)
     end
+    return soleframes
+end
 
-    if add_flat_ground
-        frame = root_frame(mechanism)
-        ground = HalfSpace3D(Point3D(frame, 0., 0., 0.), FreeVector3D(frame, 0., 0., 1.))
-        add_environment_primitive!(mechanism, ground)
+function foot_contact_points(mechanism::Mechanism{T}) where T
+    points = Dict{BodyID, Vector{Point3D{SVector{3, T}}}}()
+    for side in (:left, :right)
+        foot = findbody(mechanism, "$(first(string(side)))_foot")
+        foot_points = points[BodyID(foot)] = Point3D{SVector{3, T}}[]
+        frame = default_frame(foot)
+        z = -SOLE_TO_ANKLE_OFFSET
+
+        # heel
+        push!(foot_points, Point3D(frame, -0.0876, flipsign_if_right(0.066, side), z))
+        push!(foot_points, Point3D(frame, -0.0876, flipsign_if_right(-0.0626, side), z))
+
+        # toe:
+        push!(foot_points, Point3D(frame, 0.1728, flipsign_if_right(0.066, side), z))
+        push!(foot_points, Point3D(frame, 0.1728, flipsign_if_right(-0.0626, side), z))
+
+        # midfoot:
+        push!(foot_points, Point3D(frame, -0.0426, flipsign_if_right(0.066, side), z))
+        push!(foot_points, Point3D(frame, -0.0426, flipsign_if_right(-0.0626, side), z))
     end
-
-    remove_fixed_tree_joints && remove_fixed_tree_joints!(mechanism)
-
-    return mechanism
+    return points
 end
 
 function setnominal!(atlasstate::MechanismState)
