@@ -1,6 +1,6 @@
 datadir = "Atlas"
 atlas_examples_url = "https://raw.githubusercontent.com/RobotLocomotion/drake/73a8da32cd41ff7fd023c3680f8250860cbd0e6b/examples/atlas/"
-urdfpath = "urdf/atlas_convex_hull.urdf"
+# urdfpath = "urdf/atlas_convex_hull.urdf"
 
 meshpaths = ["urdf/meshes/GRIPPER_OPEN_chull.obj";
     "urdf/meshes/head.obj";
@@ -49,8 +49,6 @@ meshpaths = ["urdf/meshes/GRIPPER_OPEN_chull.obj";
     "urdf/meshes/utorso_chull.obj"]
 
 ispath(datadir) || mkpath(datadir)
-download(atlas_examples_url * urdfpath, joinpath(datadir, "atlas.urdf"))
-
 for meshpath in meshpaths
     meshdir, meshfilename = splitdir(meshpath)
     meshdir = joinpath(datadir, meshdir)

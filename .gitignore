@@ -1,7 +1,7 @@
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
-deps/Atlas
+deps/Atlas/urdf
 deps/build.log
 /Manifest.toml
 
