@@ -58,8 +58,8 @@ function foot_contact_points(mechanism::Mechanism{T}) where T
         push!(foot_points, Point3D(frame, 0.1728, flipsign_if_right(-0.0626, side), z))
 
         # midfoot:
-        push!(foot_points, Point3D(frame, -0.0426, flipsign_if_right(0.066, side), z))
-        push!(foot_points, Point3D(frame, -0.0426, flipsign_if_right(-0.0626, side), z))
+        push!(foot_points, Point3D(frame, 0.0426, flipsign_if_right(0.066, side), z))
+        push!(foot_points, Point3D(frame, 0.0426, flipsign_if_right(-0.0626, side), z))
     end
     return points
 end
