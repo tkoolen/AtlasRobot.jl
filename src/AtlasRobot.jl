@@ -64,10 +64,9 @@ function foot_contact_points(mechanism::Mechanism{T}) where T
     return points
 end
 
-function setnominal!(atlasstate::MechanismState)
+function setnominal!(atlasstate::MechanismState; kneebend = 1.1)
     mechanism = atlasstate.mechanism
     zero!(atlasstate)
-    kneebend = 1.1
     hipbendextra = 0.0
     left_shoulder_x_angle = -1.2
     elbow_y_angle = pi / 2
@@ -88,6 +87,7 @@ function setnominal!(atlasstate::MechanismState)
     end
     floatingjoint = first(out_joints(root_body(mechanism), mechanism))
     set_configuration!(atlasstate, floatingjoint, [1; 0; 0; 0; 0; 0; 0.85])
+    setdirty!(atlasstate)
     atlasstate
 end
 
