@@ -35,7 +35,7 @@ function add_sole_frames!(mechanism::Mechanism)
         body = findbody(mechanism, "$(first(string(side)))_foot")
         bodyframe = default_frame(body)
         soleframe = soleframes[BodyID(body)] = CartesianFrame3D("$(body)_sole")
-        sole_to_body = Transform3D(soleframe, bodyframe, SVector(0, 0, -SOLE_TO_ANKLE_OFFSET))
+        sole_to_body = Transform3D(soleframe, bodyframe, SVector(0.0426, 0, -SOLE_TO_ANKLE_OFFSET))
         add_frame!(body, sole_to_body)
     end
     return soleframes
