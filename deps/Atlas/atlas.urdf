@@ -1548,12 +1548,12 @@
       <origin xyz="0 0 0"/>
       <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
     </inertial>
-    <visual>
+    <!-- <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
         <box size="0.01 0.01 0.01"/>
       </geometry>
-    </visual>
+    </visual> -->
   </link>
   <joint name="l_hand_force_torque_joint" type="fixed">
     <origin rpy="0 0 3.141592" xyz="0 -0.1245 0"/>
@@ -1566,12 +1566,12 @@
       <origin xyz="0 0 0"/>
       <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
     </inertial>
-    <visual>
+    <!-- <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
         <box size="0.01 0.01 0.01"/>
       </geometry>
-    </visual>
+    </visual> -->
   </link>
   <joint name="r_hand_force_torque_joint" type="fixed">
     <origin rpy="0 0 3.141592" xyz="0 -0.1245 0"/>
@@ -1584,13 +1584,13 @@
     <visual>
       <origin rpy="-1.57079 -1.57079 0" xyz="0 0.1725 0"/>
       <geometry>
-	<mesh filename="package://Atlas/urdf/meshes/GRIPPER_OPEN_chull.obj" scale="1 1 1"/>
+	      <!-- <mesh filename="package://Atlas/urdf/meshes/GRIPPER_OPEN_chull.obj" scale="1 1 1"/> -->
       </geometry>
     </visual>
     <collision group="left_hand_robotiq">
       <origin rpy="-1.57079 -1.57079 0" xyz="0 0.1725 0"/>
       <geometry>
-	<mesh filename="package://Atlas/urdf/meshes/GRIPPER_OPEN_chull.obj" scale="1 1 1"/>
+	      <!-- <mesh filename="package://Atlas/urdf/meshes/GRIPPER_OPEN_chull.obj" scale="1 1 1"/> -->
       </geometry>
     </collision>
   </link>
@@ -1602,13 +1602,13 @@
     <visual>
       <origin rpy="-1.57079 -1.57079 0" xyz="0 0.1725 0"/>
       <geometry>
-	<mesh filename="package://Atlas/urdf/meshes/GRIPPER_OPEN_chull.obj" scale="1 1 1"/>
+	      <!-- <mesh filename="package://Atlas/urdf/meshes/GRIPPER_OPEN_chull.obj" scale="1 1 1"/> -->
       </geometry>
     </visual>
     <collision group="right_hand_robotiq">
       <origin rpy="-1.57079 -1.57079 0" xyz="0 0.1725 0"/>
       <geometry>
-	<mesh filename="package://Atlas/urdf/meshes/GRIPPER_OPEN_chull.obj" scale="1 1 1"/>
+	      <!-- <mesh filename="package://Atlas/urdf/meshes/GRIPPER_OPEN_chull.obj" scale="1 1 1"/> -->
       </geometry>
     </collision>
   </link>
